@@ -1,51 +1,66 @@
-﻿// ===============================================
-// STEP 1: Update your server.js to add auth routes
-// Replace your current server.js with this:
-
-const express = require('express');
+﻿const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 require('dotenv').config();
 
+const http = require('http');
+const { Server } = require('socket.io');
+
 console.log('🔄 Starting Connecto Backend...');
 
 const app = express();
+const server = http.createServer(app);
 
-// Middleware
+// Basic middleware
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:5173', // Updated to match Vite default port
   credentials: true
 }));
-app.use(express.json()); // This is important for parsing POST requests
-console.log("MONGO_URI from .env:", process.env.MONGO_URI);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Database connection
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✅ MongoDB connected'))
   .catch(err => console.error('❌ MongoDB connection error:', err));
 
-// Routes
-app.use('/api/auth', require('./routes/auth'));
+// Socket.io setup
+const io = new Server(server, {
+  cors: {
+    origin: "http://localhost:5173",
+    methods: ["GET", "POST"],
+    credentials: true
+  }
+});
+
+io.on('connection', (socket) => {
+  console.log('🔌 New client connected:', socket.id);
+  
+  socket.on('disconnect', () => {
+    console.log('❌ Client disconnected:', socket.id);
+  });
+});
+
+// Make io available in routes
+app.set('io', io);
 
 // Test route
 app.get('/', (req, res) => {
-  res.json({ 
+  res.json({
+    success: true,
     message: 'Connecto Backend API is running!',
-    endpoints: {
-      signup: 'POST /api/auth/signup',
-      verifyOtp: 'POST /api/auth/verify-otp',
-      login: 'POST /api/auth/login',
-      resendOtp: 'POST /api/auth/resend-otp'
-    },
     timestamp: new Date().toISOString()
   });
 });
 
+// Routes
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/posts', require('./routes/posts'));
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Test at: http://localhost:${PORT}`);
-  console.log(`🔗 Ready for API calls!`);
+  console.log(`📍 API available at: http://localhost:${PORT}`);
+  console.log(`✨ Ready for connections!`);
 });
-
-

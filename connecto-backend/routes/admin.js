@@ -1,11 +1,11 @@
-﻿const express = require('express');
+const express = require('express');
 const { auth } = require('../middleware/auth');
 const router = express.Router();
 
-router.get('/profile', auth, async (req, res) => {
+router.get('/stats', auth, async (req, res) => {
   res.json({
     success: true,
-    message: 'User profile endpoint working'
+    message: 'Admin stats endpoint working'
   });
 });
 

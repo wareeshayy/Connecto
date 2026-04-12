@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: connecto-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 5000
+      - key: MONGODB_URI
+        sync: false # You'll set this in Render.com dashboard
+      - key: JWT_SECRET
+        sync: false
+    autoDeploy: true
+    healthCheckPath: /health
