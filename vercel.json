@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd connecto-frontend && npm install && npm run build",
+  "outputDirectory": "connecto-frontend/dist",
+  "installCommand": "echo 'Done'"
+}

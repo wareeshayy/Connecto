@@ -1,0 +1,7 @@
+{
+  "name": "connecto-root",
+  "private": true,
+  "scripts": {
+    "build": "cd connecto-frontend && npm install && npm run build"
+  }
+}
