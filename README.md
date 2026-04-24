@@ -3,7 +3,7 @@
 
 ✨ **Connect, Share, and Engage** – A full-stack social media app built with **React, Node.js, MongoDB, and Tailwind CSS** for a seamless user experience.  
 
-#Live Link:  
+**Live Link:  **
 https://connecto-web-app.netlify.app/
 ---
 
